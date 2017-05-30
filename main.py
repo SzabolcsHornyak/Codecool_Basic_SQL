@@ -46,7 +46,19 @@ def contacts():
     plus the name of contact person at the school (from the mentors table) ordered by the name of the school
     columns: schools.name, mentors.first_name, mentors.last_name"""
     list_title = "Contacts page"
-    mentors_data_set = psql_query("SELECT count(m.first_name), s.country FROM mentors m left join schools s on m.city = s.city group by s.country order by s.country")
+    mentors_data_set = psql_query("select s.name, m.first_name || ' ' || m.last_name as Mentor_Name from schools s inner join mentors m on m.id=s.contact_person order by s.name")
+    return render_template('list.html', datas=mentors_data_set, title=list_title)
+
+
+@app.route('/applicants')
+def applicants_page():
+    """On this page you should show the result of a query that returns the first name 
+    and the code of the applicants plus the creation_date of the application 
+    (joining with the applicants_mentors table) ordered by the creation_date in descending order
+    BUT only for applications later than 2016-01-01
+    columns: applicants.first_name, applicants.application_code, applicants_mentors.creation_date"""
+    list_title = "Applicants page"
+    mentors_data_set = psql_query("select a.first_name, a.application_code, am.creation_date from applicants a inner join applicants_mentors am on a.id=am.applicant_id where am.creation_date>to_date('2016-01-01', 'YYYY-MM-DD')")
     return render_template('list.html', datas=mentors_data_set, title=list_title)
     
 
