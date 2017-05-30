@@ -12,14 +12,43 @@ password = '1234'
 
 @app.route('/mentors')
 def mentors():
-    """
-    On this page you should show the result of a query that returns the name of the mentors plus the name
+    """On this page you should show the result of a query that returns the name of the mentors plus the name
     and country of the school (joining with the schools table) ordered by the mentors id column 
     (columns: mentors.first_name, mentors.last_name, schools.name, schools.country)."""
-    list_title = "Mentors, Schools and Country"
-    mentors_data_set = psql_query("SELECT m.first_name || ' ' || m.last_name as Mentor_Name, schools.name, schools.country FROM mentors m left join schools on m.city = schools.city;")
+    list_title = "Mentors and schools page"
+    mentors_data_set = psql_query("SELECT m.first_name || ' ' || m.last_name as Mentor_Name, schools.name, schools.country FROM mentors m left join schools on m.city = schools.city order by m.id;")
     return render_template('list.html', datas=mentors_data_set, title=list_title)
 
+
+@app.route('/all-school')
+def all_school():
+    """On this page you should show the result of a query that returns the name of the mentors 
+    plus the name and country of the school (joining with the schools table) ordered by the mentors id column.
+    BUT include all the schools, even if there's no mentor yet!
+    columns: mentors.first_name, mentors.last_name, schools.name, schools.country"""
+    list_title = "All school page "
+    mentors_data_set = psql_query("SELECT m.first_name || ' ' || m.last_name as Mentor_Name, schools.name, schools.country FROM mentors m right join schools on m.city = schools.city order by m.id;")
+    return render_template('list.html', datas=mentors_data_set, title=list_title)
+
+
+@app.route('/mentors-by-country')
+def mentors_by_country():
+    """On this page you should show the result of a query that returns the number of the mentors
+    per country ordered by the name of the countries columns: country, count"""
+    list_title = "Mentors by Country"
+    mentors_data_set = psql_query("SELECT count(m.first_name), s.country FROM mentors m left join schools s on m.city = s.city group by s.country order by s.country")
+    return render_template('list.html', datas=mentors_data_set, title=list_title)
+
+
+@app.route('/contacts')
+def contacts():
+    """On this page you should show the result of a query that returns the name of the school 
+    plus the name of contact person at the school (from the mentors table) ordered by the name of the school
+    columns: schools.name, mentors.first_name, mentors.last_name"""
+    list_title = "Contacts page"
+    mentors_data_set = psql_query("SELECT count(m.first_name), s.country FROM mentors m left join schools s on m.city = s.city group by s.country order by s.country")
+    return render_template('list.html', datas=mentors_data_set, title=list_title)
+    
 
 def make_default():
     '''
