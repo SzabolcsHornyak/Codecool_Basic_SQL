@@ -62,6 +62,19 @@ def applicants_page():
     return render_template('list.html', datas=mentors_data_set, title=list_title)
     
 
+@app.route('/applicants-and-mentors')
+def applicants_and_mentors():
+    """On this page you should show the result of a query that returns the first name 
+    and the code of the applicants plus the name of the assigned mentor 
+    (joining through the applicants_mentors table) ordered by the applicants id colum
+    Show all the applicants, even if they have no assigned mentor in the database!
+    In this case use the string 'None' instead of the mentor name
+    columns: applicants.first_name, applicants.application_code, mentor_first_name, mentor_last_name"""
+    list_title = "Applicants and mentors page"
+    mentors_data_set = psql_query("select a.first_name, a.application_code, case when am.mentor_id>0 then (select m.first_name || ' ' || m.last_name as mn from mentors m where am.mentor_id=m.id) end as Mentor_name from applicants a left join applicants_mentors am on am.applicant_id=a.id")
+    return render_template('list.html', datas=mentors_data_set, title=list_title)
+
+
 def make_default():
     '''
     Restoring default state of APPLICANTS table
