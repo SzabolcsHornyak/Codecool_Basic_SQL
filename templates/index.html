@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="/static/mystyle.css">
+    <title>127.0.0.1 sweet 127.0.0.1...</title>
+</head>
+<body>
+    <div class="menu_simple">
+    <ul>
+        <li><a href="/mentors">Mentors and schools page [/mentors]</a>
+            <ul>
+                <li>SELECT m.first_name || ' ' || m.last_name as Mentor_Name, schools.name, schools.country FROM mentors m left join schools on m.city = schools.city order by m.id;</li>
+            </ul>
+        </li>
+        <li><a href="/all-school">All school page [/all-school]</a>
+            <ul>
+                <li>SELECT m.first_name || ' ' || m.last_name as Mentor_Name, schools.name, schools.country FROM mentors m right join schools on m.city = schools.city order by m.id;</li>
+            </ul>
+        </li>
+        <li><a href="/mentors-by-country">Contacts page [/mentors-by-country]</a>
+            <ul>
+                <li>SELECT count(m.first_name), s.country FROM mentors m left join schools s on m.city = s.city group by s.country order by s.country;</li>
+            </ul>
+        </li>
+        <li><a href="/contacts">Contacts page [/contacts]</a>
+            <ul>
+                <li>SELECT s.name, m.first_name || ' ' || m.last_name as Mentor_Name FROM schools s inner join mentors m on m.id=s.contact_person order by s.name;</li>
+            </ul>
+        </li>
+        <li><a href="/applicants">Applicants page [/applicants]</a>
+            <ul>
+                <li>SELECT a.first_name, a.application_code, am.creation_date FROM applicants a inner join applicants_mentors am on a.id=am.applicant_id where am.creation_date>to_date('2016-01-01', 'YYYY-MM-DD');</li>
+            </ul>
+        </li>
+        <li><a href="/applicants-and-mentors">Applicants and mentors page [/applicants-and-mentors]</a>
+            <ul>
+                <li>SELECT a.first_name, a.application_code, case when am.mentor_id>0 then (SELECT m.first_name || ' ' || m.last_name as mn FROM mentors m WHERE am.mentor_id=m.id) end as Mentor_name FROM applicants a left join applicants_mentors am on am.applicant_id=a.id;</li>
+            </ul>
+        </li>
+    </ul>
+    </div>
+</body>
+</html>

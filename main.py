@@ -10,6 +10,11 @@ host = 'localhost'
 password = '1234'
 
 
+@app.route('/')
+def root():
+    return render_template('index.html')
+
+
 @app.route('/mentors')
 def mentors():
     """On this page you should show the result of a query that returns the name of the mentors plus the name
@@ -36,17 +41,17 @@ def mentors_by_country():
     """On this page you should show the result of a query that returns the number of the mentors
     per country ordered by the name of the countries columns: country, count"""
     list_title = "Mentors by Country"
-    mentors_data_set = psql_query("SELECT count(m.first_name), s.country FROM mentors m left join schools s on m.city = s.city group by s.country order by s.country")
+    mentors_data_set = psql_query("SELECT count(m.first_name), s.country FROM mentors m left join schools s on m.city = s.city group by s.country order by s.country;")
     return render_template('list.html', datas=mentors_data_set, title=list_title)
 
 
 @app.route('/contacts')
 def contacts():
     """On this page you should show the result of a query that returns the name of the school 
-    plus the name of contact person at the school (from the mentors table) ordered by the name of the school
+    plus the name of contact person at the school (FROM the mentors table) ordered by the name of the school
     columns: schools.name, mentors.first_name, mentors.last_name"""
     list_title = "Contacts page"
-    mentors_data_set = psql_query("select s.name, m.first_name || ' ' || m.last_name as Mentor_Name from schools s inner join mentors m on m.id=s.contact_person order by s.name")
+    mentors_data_set = psql_query("SELECT s.name, m.first_name || ' ' || m.last_name as Mentor_Name FROM schools s inner join mentors m on m.id=s.contact_person order by s.name;")
     return render_template('list.html', datas=mentors_data_set, title=list_title)
 
 
@@ -58,7 +63,7 @@ def applicants_page():
     BUT only for applications later than 2016-01-01
     columns: applicants.first_name, applicants.application_code, applicants_mentors.creation_date"""
     list_title = "Applicants page"
-    mentors_data_set = psql_query("select a.first_name, a.application_code, am.creation_date from applicants a inner join applicants_mentors am on a.id=am.applicant_id where am.creation_date>to_date('2016-01-01', 'YYYY-MM-DD')")
+    mentors_data_set = psql_query("SELECT a.first_name, a.application_code, am.creation_date FROM applicants a inner join applicants_mentors am on a.id=am.applicant_id WHERE am.creation_date>to_date('2016-01-01', 'YYYY-MM-DD');")
     return render_template('list.html', datas=mentors_data_set, title=list_title)
     
 
@@ -71,7 +76,7 @@ def applicants_and_mentors():
     In this case use the string 'None' instead of the mentor name
     columns: applicants.first_name, applicants.application_code, mentor_first_name, mentor_last_name"""
     list_title = "Applicants and mentors page"
-    mentors_data_set = psql_query("select a.first_name, a.application_code, case when am.mentor_id>0 then (select m.first_name || ' ' || m.last_name as mn from mentors m where am.mentor_id=m.id) end as Mentor_name from applicants a left join applicants_mentors am on am.applicant_id=a.id")
+    mentors_data_set = psql_query("SELECT a.first_name, a.application_code, case when am.mentor_id>0 then (SELECT m.first_name || ' ' || m.last_name as mn FROM mentors m WHERE am.mentor_id=m.id) end as Mentor_name FROM applicants a left join applicants_mentors am on am.applicant_id=a.id;")
     return render_template('list.html', datas=mentors_data_set, title=list_title)
 
 
